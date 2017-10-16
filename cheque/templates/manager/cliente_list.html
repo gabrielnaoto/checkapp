@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+Lista de clientes
+{% endblock %}
+
+{% block content %}
+<table class="table table-bordered" data-page-size="8" >
+  <thead>
+    <tr>
+      <th class="col-lg-1">#</th>
+      <th >Código</th>
+      <th >Nome</th>
+      <th colspan="2" class="col-lg-2">Opções</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cliente in object_list %}
+    <tr>
+      <td>{{ cliente.id }}</td>
+      <td>{{ cliente.codigo }}</td>
+      <td>{{ cliente.nome }}</td>
+      <td><a href="{% url "cliente_edit" cliente.id %}"><i class="fa fa-pencil" aria-hidden="true"></i></a></td>
+      <td><a href="{% url "cliente_delete" cliente.id %}"><i class="fa fa-times" aria-hidden="true"></i></a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<hr/>
+<a href="{% url "cliente_new" %}" class="btn btn-primary">Adicionar</a>
+{% endblock %}

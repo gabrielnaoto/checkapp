@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+Confirmar exclusão cliente
+{% endblock %}
+
+{% block content %}
+<form method="post">{% csrf_token %}
+  <p>Você tem certeza que gostaria de excluir <strong>{{ object }}</strong>?</p>
+  <small>Esta operação não pode ser desfeita</small>
+  <hr/>
+  <input type="submit" value="Excluir" />
+</form>
+
+{% endblock %}
