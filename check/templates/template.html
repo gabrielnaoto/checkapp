@@ -1,0 +1,98 @@
+<!doctype html>
+{% load static %}
+<html lang="pt-BR">
+<head>
+    <title>CheckApp</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'index' %}">CheckApp</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'index' %}">Página inicial</a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Cadastros
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <!--<a class="dropdown-item" href="form.html">Empresa</a>-->
+                    <!--<div class="dropdown-divider"></div>-->
+                    <!--<a class="dropdown-item" href="list.html">Fonecedor</a>-->
+                    <a class="dropdown-item" href="{% url 'list_cliente' %}">Cliente</a>
+                    <!--<div class="dropdown-divider"></div>-->
+                    <!--<a class="dropdown-item" href="#">Terceiros</a>-->
+                </div>
+            </li>
+            <!--<li class="nav-item dropdown">-->
+                <!--<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown"-->
+                   <!--aria-haspopup="true" aria-expanded="false">-->
+                    <!--Controle de cheques-->
+                <!--</a>-->
+                <!--<div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+                    <!--<a class="dropdown-item" href="#">Receber</a>-->
+                    <!--<a class="dropdown-item" href="#">Emitir</a>-->
+                    <!--<a class="dropdown-item" href="#">Repassar</a>-->
+                <!--</div>-->
+            <!--</li>-->
+        </ul>
+        <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'logout' %}">Encerrar sessão <i
+                class="fa fa-sign-out"></i></a>
+    </div>
+</nav>
+
+
+<nav aria-label="breadcrumb" role="navigation">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Página inicial</a></li>
+        {% if bread_menu %}
+        <li class="breadcrumb-item"><a href="">{{ bread_menu }} </a></li>
+        {% endif %}
+        {% if bread_item %}
+        <li class="breadcrumb-item active" aria-current="page">{{ bread_item }}</li>
+        {% endif %}
+    </ol>
+</nav>
+
+
+<div class="container-fluid" style="margin-bottom: 75px;">
+
+    {% block content %}
+
+    {% endblock %}
+
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
+        integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+        integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.js"></script>
+
+
+</body>
+</html>

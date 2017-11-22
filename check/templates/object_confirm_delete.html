@@ -1,0 +1,12 @@
+{% extends 'template.html' %}
+
+{% load crispy_form_tags %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h4>Você confirma a exclusão deste??</h4>
+        {% crispy form %}
+    </div>
+</div>
+{% endblock %}
