@@ -11,8 +11,16 @@ class Cliente(models.Model):
     celular = models.CharField(max_length=50)
     telefone = models.CharField(max_length=50)
     email = models.EmailField()
-    limite_compra = models.FloatField()
+    limite_compra = models.FloatField(verbose_name='limite de compra')
     observacao = models.TextField()
 
     def __str__(self):
         return self.nome
+
+
+class Fornecedor(models.Model):
+    razao_social = models.CharField(max_length=50)
+    cnpj = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.razao_social

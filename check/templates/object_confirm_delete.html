@@ -1,12 +1,18 @@
 {% extends 'template.html' %}
 
-{% load crispy_form_tags %}
-
 {% block content %}
 <div class="card">
     <div class="card-body">
-        <h4>Você confirma a exclusão deste??</h4>
-        {% crispy form %}
+        <form method="post">
+            {% csrf_token %}
+            <h4>Confirmar exclusão</h4>
+            <p>Você confirma a exclusão de {{ bread_item | lower }} <strong> {{ object }}</strong>?</p>
+            <p>
+                <small>Esta operação não pode ser desfeita!</small>
+            </p>
+            <hr/>
+            <input class="btn btn-danger" type="submit" value="Excluir"/>
+        </form>
     </div>
 </div>
 {% endblock %}

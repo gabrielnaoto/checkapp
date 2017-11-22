@@ -1,19 +1,55 @@
 {% extends 'template.html' %}
 
 {% block content %}
+
+{% if alert_success %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ alert_success }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+{% if alert_warning %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ alert_warning }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+{% if alert_danger %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ alert_danger }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
 <div class="card">
     <div class="card-body">
-        <h4>Clientes</h4>
+        <h4>Listagem de {{ bread_item }}</h4>
         <a class="btn btn-primary" style="margin: 10px 0px 20px;" href="{% url 'create_cliente' %}">Adicionar</a>
         <ul class="list-group">
+            {% if object_list %}
             {% for object in object_list %}
-            <a href="{% url 'update_cliente' object.id %}">
-                <li class="list-group-item list-group-item-action"
-                    style="display: flex; justify-content: space-between;">
-                    {{ object }}
-                </li>
-            </a>
+            <li class="list-group-item list-group-item-action"
+                style="display: flex; justify-content: space-between;">
+                {{ object }}
+                <div class="col-lg-1" style="display: flex; justify-content: space-between;">
+                    <a href="{% url 'update_cliente' object.id %}"><i class="fa fa-pencil"></i></a>
+                    <a href="{% url 'delete_cliente' object.id %}"><i class="fa fa-times"></i></a>
+                </div>
+            </li>
             {% endfor %}
+            {% else %}
+            <li class="list-group-item list-group-item-action">
+                Não há registros ainda
+            </li>
+            {% endif %}
         </ul>
     </div>
 </div>
