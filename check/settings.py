@@ -24,7 +24,7 @@ SECRET_KEY = 'f#76%te7$=57de5md7-*$5+1&-8byg=gn5r=qx-+y3-xosvv9@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -101,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'pt-BR'
+LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
 
@@ -120,7 +120,7 @@ STATICFILES_DIRS = (os.path.join(
 
 STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "deployment", "check", "static")
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 AUTH_USER_MODEL = 'core.User'
 LOGIN_REDIRECT_URL = 'index'

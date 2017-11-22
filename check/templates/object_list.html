@@ -7,9 +7,12 @@
         <a class="btn btn-primary" style="margin: 10px 0px 20px;" href="{% url 'create_cliente' %}">Adicionar</a>
         <ul class="list-group">
             {% for object in object_list %}
-            <li class="list-group-item list-group-item-action" style="display: flex; justify-content: space-between;">
-                <a href="{% url 'update_cliente' object.id %}">{{ object }}</a>
-            </li>
+            <a href="{% url 'update_cliente' object.id %}">
+                <li class="list-group-item list-group-item-action"
+                    style="display: flex; justify-content: space-between;">
+                    {{ object }}
+                </li>
+            </a>
             {% endfor %}
         </ul>
     </div>
