@@ -1,4 +1,4 @@
-{% load static staticfiles %}
+{% load static %}
 <html lang="pt-BR">
 <head>
     <title>CheckApp</title>
@@ -9,9 +9,9 @@
     <!-- Bootstrap CSS -->
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link href="{% static 'css/base.css' %}">
-    <link href="{% static 'css/font-awesome.min.css' %}">
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous" rel="stylesheet">
+    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -34,10 +34,13 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <!--<a class="dropdown-item" href="form.html">Empresa</a>-->
-                    <!--<div class="dropdown-divider"></div>-->
+
                     <!--<a class="dropdown-item" href="list.html">Fonecedor</a>-->
                     <a class="dropdown-item" href="{% url 'list_cliente' %}">Cliente</a>
+                    <a class="dropdown-item" href="{% url 'list_terceiro' %}">Terceiro</a>
                     <a class="dropdown-item" href="{% url 'list_fornecedor' %}">Fornecedor</a>
+                     <div class="dropdown-divider"></div>
+                     <a class="dropdown-item" href="{% url 'list_banco' %}">Banco</a>
                     <!--<div class="dropdown-divider"></div>-->
                     <!--<a class="dropdown-item" href="#">Terceiros</a>-->
                 </div>

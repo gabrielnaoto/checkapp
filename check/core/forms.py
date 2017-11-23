@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.forms import ModelForm
 
-from check.core.models import Cliente, Fornecedor
+from check.core.models import Cliente, Fornecedor, Banco, Terceiro
 
 
 class CustomFormHelper(FormHelper):
@@ -24,6 +24,7 @@ class ClienteForm(ModelForm):
         self.helper = CustomFormHelper()
 
 
+
 class FornecedorForm(ModelForm):
     class Meta:
         model = Fornecedor
@@ -31,4 +32,23 @@ class FornecedorForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(FornecedorForm, self).__init__(*args, **kwargs)
+        self.helper = CustomFormHelper()
+        
+        
+class BancoForm(ModelForm):
+    class Meta:
+        model = Banco
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(BancoForm, self).__init__(*args, **kwargs)
+        self.helper = CustomFormHelper()
+        
+class TerceiroForm(ModelForm):
+    class Meta:
+        model = Terceiro
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(TerceiroForm, self).__init__(*args, **kwargs)
         self.helper = CustomFormHelper()
