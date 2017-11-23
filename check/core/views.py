@@ -20,6 +20,8 @@ class ListCliente(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
         ctx['bread_item'] = 'Cliente'
+        ctx['edit_url'] = 'update_cliente'
+        ctx['delete_url'] = 'delete_cliente'
         return ctx
 
 
@@ -67,6 +69,8 @@ class ListFornecedor(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
         ctx['bread_item'] = 'Fornecedor'
+        ctx['edit_url'] = 'update_fornecedor'
+        ctx['delete_url'] = 'delete_fornecedor'
         return ctx
 
 
