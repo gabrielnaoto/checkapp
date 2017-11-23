@@ -105,3 +105,4 @@ ENV/
 .idea/modules.xml
 .idea/vcs.xml
 cheque/db.sqlite3
+*.sqlite3
