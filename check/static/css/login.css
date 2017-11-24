@@ -18,6 +18,7 @@ h2 {
 div.card {
   max-width: 500px;
   margin: 0 auto;
+  margin-bottom: 16px;
 }
 
 div.card > div.card-body {

@@ -1,18 +1,20 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 
 # Create your views here.
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views import View
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 
-from check.core.forms import ClienteForm, FornecedorForm, TerceiroForm, BancoForm
-from check.core.models import Cliente, Fornecedor, Banco, Terceiro
-
-
-def index(request):
-    return render(request, 'template.html', {})
+from check.core.forms import ClienteForm, FornecedorForm, TerceiroForm, BancoForm, EmpresaForm, ChequeForm
+from check.core.models import Cliente, Fornecedor, Banco, Terceiro, Empresa, Cheque
 
 
-class ListCliente(ListView):
+class IndexView(LoginRequiredMixin, TemplateView):
+    template_name = 'template.html'
+
+
+class ListCliente(LoginRequiredMixin, ListView):
     model = Cliente
     template_name = 'object_list.html'
 
@@ -26,7 +28,7 @@ class ListCliente(ListView):
         return ctx
 
 
-class CreateCliente(CreateView):
+class CreateCliente(LoginRequiredMixin, CreateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'object_form.html'
@@ -39,7 +41,7 @@ class CreateCliente(CreateView):
         return ctx
 
 
-class UpdateCliente(UpdateView):
+class UpdateCliente(LoginRequiredMixin, UpdateView):
     model = Cliente
     form_class = ClienteForm
     template_name = 'object_form.html'
@@ -52,7 +54,7 @@ class UpdateCliente(UpdateView):
         return ctx
 
 
-class DeleteCliente(DeleteView):
+class DeleteCliente(LoginRequiredMixin, DeleteView):
     model = Cliente
     template_name = 'object_confirm_delete.html'
     success_url = reverse_lazy('list_cliente')
@@ -64,7 +66,7 @@ class DeleteCliente(DeleteView):
         return ctx
 
 
-class ListFornecedor(ListView):
+class ListFornecedor(LoginRequiredMixin, ListView):
     model = Fornecedor
     template_name = 'object_list.html'
 
@@ -78,7 +80,7 @@ class ListFornecedor(ListView):
         return ctx
 
 
-class CreateFornecedor(CreateView):
+class CreateFornecedor(LoginRequiredMixin, CreateView):
     model = Fornecedor
     form_class = FornecedorForm
     template_name = 'object_form.html'
@@ -91,7 +93,7 @@ class CreateFornecedor(CreateView):
         return ctx
 
 
-class UpdateFornecedor(UpdateView):
+class UpdateFornecedor(LoginRequiredMixin, UpdateView):
     model = Fornecedor
     form_class = FornecedorForm
     template_name = 'object_form.html'
@@ -104,7 +106,7 @@ class UpdateFornecedor(UpdateView):
         return ctx
 
 
-class DeleteFornecedor(DeleteView):
+class DeleteFornecedor(LoginRequiredMixin, DeleteView):
     model = Fornecedor
     template_name = 'object_confirm_delete.html'
     success_url = reverse_lazy('list_fornecedor')
@@ -116,7 +118,7 @@ class DeleteFornecedor(DeleteView):
         return ctx
 
 
-class ListTerceiro(ListView):
+class ListTerceiro(LoginRequiredMixin, ListView):
     model = Terceiro
     template_name = 'object_list.html'
 
@@ -130,7 +132,7 @@ class ListTerceiro(ListView):
         return ctx
 
 
-class CreateTerceiro(CreateView):
+class CreateTerceiro(LoginRequiredMixin, CreateView):
     model = Terceiro
     form_class = TerceiroForm
     template_name = 'object_form.html'
@@ -143,7 +145,7 @@ class CreateTerceiro(CreateView):
         return ctx
 
 
-class UpdateTerceiro(UpdateView):
+class UpdateTerceiro(LoginRequiredMixin, UpdateView):
     model = Terceiro
     form_class = TerceiroForm
     template_name = 'object_form.html'
@@ -156,7 +158,7 @@ class UpdateTerceiro(UpdateView):
         return ctx
 
 
-class DeleteTerceiro(DeleteView):
+class DeleteTerceiro(LoginRequiredMixin, DeleteView):
     model = Terceiro
     template_name = 'object_confirm_delete.html'
     success_url = reverse_lazy('list_terceiro')
@@ -168,7 +170,7 @@ class DeleteTerceiro(DeleteView):
         return ctx
 
 
-class ListBanco(ListView):
+class ListBanco(LoginRequiredMixin, ListView):
     model = Banco
     template_name = 'object_list.html'
 
@@ -182,7 +184,7 @@ class ListBanco(ListView):
         return ctx
 
 
-class CreateBanco(CreateView):
+class CreateBanco(LoginRequiredMixin, CreateView):
     model = Banco
     form_class = BancoForm
     template_name = 'object_form.html'
@@ -195,7 +197,7 @@ class CreateBanco(CreateView):
         return ctx
 
 
-class UpdateBanco(UpdateView):
+class UpdateBanco(LoginRequiredMixin, UpdateView):
     model = Banco
     form_class = BancoForm
     template_name = 'object_form.html'
@@ -208,7 +210,7 @@ class UpdateBanco(UpdateView):
         return ctx
 
 
-class DeleteBanco(DeleteView):
+class DeleteBanco(LoginRequiredMixin, DeleteView):
     model = Banco
     template_name = 'object_confirm_delete.html'
     success_url = reverse_lazy('list_banco')
@@ -217,4 +219,80 @@ class DeleteBanco(DeleteView):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
         ctx['bread_item'] = 'Banco'
+        return ctx
+
+
+def empresa(request):
+    return render(request, "template.html",
+                  {"alert_danger": "Você ainda não fez a configuração inicial da sua empresa"})
+
+
+class UpdateEmpresa(LoginRequiredMixin, UpdateView):
+    model = Empresa
+    form_class = EmpresaForm
+    template_name = 'object_form.html'
+    success_url = reverse_lazy('list_empresa')
+
+    def get_object(self):
+        print(self.request.user.empresa)
+        print(type(self.request.user.empresa))
+        e = Empresa.objects.get(id=self.request.user.empresa.id)
+        return e;
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Cadastros'
+        ctx['bread_item'] = 'Empresa'
+        return ctx
+
+
+class ListCheque(LoginRequiredMixin, ListView):
+    model = Cheque
+    template_name = 'object_list.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Cadastros'
+        ctx['bread_item'] = 'Cheque'
+        ctx['create_url'] = 'create_cheque'
+        ctx['edit_url'] = 'update_cheque'
+        ctx['delete_url'] = 'delete_cheque'
+        return ctx
+
+
+class CreateCheque(LoginRequiredMixin, CreateView):
+    model = Cheque
+    form_class = ChequeForm
+    template_name = 'object_form.html'
+    success_url = reverse_lazy('list_cheque')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Cadastros'
+        ctx['bread_item'] = 'Cheque'
+        return ctx
+
+
+class UpdateCheque(LoginRequiredMixin, UpdateView):
+    model = Cheque
+    form_class = ChequeForm
+    template_name = 'object_form.html'
+    success_url = reverse_lazy('list_cheque')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Cadastros'
+        ctx['bread_item'] = 'Cheque'
+        return ctx
+
+
+class DeleteCheque(LoginRequiredMixin, DeleteView):
+    model = Cheque
+    template_name = 'object_confirm_delete.html'
+    success_url = reverse_lazy('list_cheque')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Cadastros'
+        ctx['bread_item'] = 'Cheque'
         return ctx

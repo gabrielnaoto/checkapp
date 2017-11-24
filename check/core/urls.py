@@ -5,7 +5,7 @@ from check.core.views import *
 urlpatterns = [
     url(r'', include('django.contrib.auth.urls')),
 
-    url(r'^index/', index, name='index'),
+    url(r'^index/', IndexView.as_view(), name='index'),
 
     url(r'^cliente/$', ListCliente.as_view(), name='list_cliente'),
     url(r'^cliente/add$', CreateCliente.as_view(), name='create_cliente'),
@@ -26,4 +26,11 @@ urlpatterns = [
     url(r'^terceiro/add$', CreateTerceiro.as_view(), name='create_terceiro'),
     url(r'^terceiro/edit/(?P<pk>\d+)$', UpdateTerceiro.as_view(), name='update_terceiro'),
     url(r'^terceiro/delete/(?P<pk>\d+)$', DeleteTerceiro.as_view(), name='delete_terceiro'),
+    
+    url(r'^empresa/$', UpdateEmpresa.as_view(), name='empresa'),
+    
+    url(r'^cheque/$', ListCheque.as_view(), name='list_cheque'),
+    url(r'^cheque/add$', CreateCheque.as_view(), name='create_cheque'),
+    url(r'^cheque/edit/(?P<pk>\d+)$', UpdateCheque.as_view(), name='update_cheque'),
+    url(r'^cheque/delete/(?P<pk>\d+)$', DeleteCheque.as_view(), name='delete_cheque'),
 ]

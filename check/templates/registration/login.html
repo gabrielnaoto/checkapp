@@ -1,18 +1,56 @@
 {% extends 'registration/template_login.html' %}
 
+{% load core_extras %}
+
 {% block content %}
-<form class="form-signin">
-    <div style="text-align: center;">
-        <h2 class="form-signin-heading">CheckApp</h2>
+
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-user fa-fw"></i></div>
+            {{ form.username |addcss:"form-control"}}
+        </div>
     </div>
-    <label for="inputEmail" class="sr-only">Email address</label>
-    <input type="email" id="inputEmail" class="form-control" placeholder="usuário" required="" autofocus="">
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input type="password" id="inputPassword" class="form-control" placeholder="senha" required="">
+    <div class="form-group">
+        <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>
+            {{ form.password |addcss:"form-control"}}
+        </div>
+    </div>
     <hr/>
-    <div style="text-align: right;">
-        <button class="btn btn-lg btn-outline-primary btn-block" type="submit">Iniciar sessão <i
-                class="fa fa-sign-in"></i></button>
+    <div>
+        <input type="submit" value="Iniciar sessão" class="btn btn-primary btn-block"/>
+        <input type="hidden" name="next" value="{{ next }}"/>
+
     </div>
 </form>
+{% endblock %}
+
+{% block error %}
+{% if form.errors %}
+<div style="display: flex; align-items: center; justify-content: center; ">
+    <div class="alert alert-danger" role="alert"
+         style="width: 500px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center;">
+        Usuário ou senha inválidos. Por favor, tente novamente.
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block next %}
+{% if next %}
+<div style="display: flex; align-items: center; justify-content: center; ">
+    <div class="alert alert-warning" role="alert"
+         style="width: 500px; margin-left: auto; margin-right: auto; display: flex; align-items: center; justify-content: center;">
+        {% if user.is_authenticated %}
+        Sua conta não tem acesso não tem acesso para visualizar esta página. Para continuar,
+            por favor inicie uma sessão com uma conta que possua acesso.
+        {% else %}
+        Por favor, inicie uma sessão para continuar.
+        {% endif %}
+    </div>
+</div>
+{% endif %}
 {% endblock %}

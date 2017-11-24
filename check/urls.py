@@ -17,9 +17,11 @@ from django.conf.urls import url, include
 from django.contrib import admin
 
 from check import settings
+from check.core.views import IndexView
 
 urlpatterns = [
-    url(r'^cpainel/', admin.site.urls),
+    url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^asu/', admin.site.urls),
     url(r'^core/', include('check.core.urls')),
 ]
 
