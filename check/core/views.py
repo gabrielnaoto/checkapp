@@ -44,7 +44,6 @@ class CreateCliente(LoginRequiredMixin, CreateView):
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_cliente')
 
-
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
@@ -97,7 +96,6 @@ class CreateFornecedor(LoginRequiredMixin, CreateView):
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_fornecedor')
 
-
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
@@ -149,7 +147,6 @@ class CreateBanco(LoginRequiredMixin, CreateView):
     form_class = BancoForm
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_banco')
-
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -226,7 +223,6 @@ class CreateChequeEmitido(LoginRequiredMixin, CreateView):
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_cheque_emissao')
 
-
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Controle de cheques'
@@ -279,7 +275,6 @@ class CreateChequeRecebido(LoginRequiredMixin, CreateView):
     template_name = 'cheque_recebimento_form.html'
     success_url = reverse_lazy('list_cheque_recebimento')
 
-
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Controle de cheques'
@@ -311,6 +306,7 @@ class DeleteChequeRecebido(LoginRequiredMixin, DeleteView):
         ctx['bread_item'] = 'Recebimento'
         return ctx
 
+
 class BaixaChequesView(ListView):
     template_name = 'baixa.html'
     model = Recebido
@@ -329,3 +325,18 @@ def get_situacao_cliente(request):
     return JsonResponse(ctx)
 
 
+def efetuar_baixa(request):
+    id = request.GET.get('id')
+    tem_fundo = request.GET.get('tem_fundo')
+    if tem_fundo == 'true':
+        tem_fundo = True
+    else:
+        tem_fundo = False
+    print(id)
+    print(tem_fundo)
+    cheque = Recebido.objects.get(id=id)
+    cheque.tem_fundo = tem_fundo
+    cheque.foi_compensado = True
+    cheque.save()
+    ctx = {'status': True}
+    return JsonResponse(ctx)

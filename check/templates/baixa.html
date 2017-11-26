@@ -4,30 +4,34 @@
 {% block content %}
 
 
-<table class="table">
+<table class="table table-hover table-responsive">
     <thead>
     <tr>
         <th scope="col">#</th>
-        <th scope="col">Data de desconto</th>
         <th scope="col">Data de emissão</th>
         <th scope="col">Emitente</th>
         <th scope="col">Agência</th>
         <th scope="col">Banco</th>
         <th scope="col">Sem fundo</th>
+        <th scope="col">Foi compensado</th>
+        <th scope="col">Foi repassado</th>
+        <th scope="col">Baixar</th>
 
     </tr>
     </thead>
     <tbody>
     {% for cheque in object_list %}
 
-    <tr>
+    <tr class="{% if not cheque.tem_fundo%}table-danger{% elif cheque.foi_compensado %}text-success{% endif %}">
         <th scope="row">{{ cheque.numero_cheque }}</th>
-        <td>{{ cheque.data_desconto }}</td>
-        <td>{{ cheque.data_emissao }}</td>
+        <td>{{ cheque.data_lancamento | date:"d/m/Y" }}</td>
         <td>{{ cheque.cliente }}</td>
         <td>{{ cheque.banco.agencia }}</td>
         <td>{{ cheque.banco.nome }}</td>
-        <td>{{ cheque.tem_fundo }}</td>
+        <td>{{ cheque.tem_fundo | yesno:"sim,não"}}</td>
+        <td>{{ cheque.foi_compensado | yesno:"sim,não" }}</td>
+        <td>{{ cheque.foi_repassado | yesno:"sim,não" }}</td>
+        <td><a href="javascript:void(0)" onclick="efetuar_baixa({{ cheque.id }})"><i class="fa fa-check"></i></a></td>
     </tr>
 
     {% endfor %}
@@ -35,4 +39,71 @@
 </table>
 
 
+{% endblock %}
+
+{% block js %}
+<script>
+function efetuar_baixa(id) {
+    swal({
+        title: 'Atenção',
+        text: "O cheque tem fundo?",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Não'
+    }).then((result) => {
+            $.ajax({
+                url: '{% url "efetuar_baixa" %}',
+                data: {
+                    'id': id,
+                    'tem_fundo': result.value
+                },
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data)
+
+                }
+            });
+            if (result.value) {
+
+
+               swal({
+                    title: 'Realizando baixa',
+                    text: 'O cheque foi marcado com fundo',
+                    type: 'success',
+                    timer: 2000,
+                    onOpen: () => {
+                        swal.showLoading()
+                    }
+                }).then((result) => {
+                    if (result.dismiss === 'timer') {
+                        location.reload();
+                    } else {
+                        location.reload();
+                    }
+                });
+            } else {
+                swal({
+                    title: 'Realizando baixa',
+                    text: 'O cheque foi marcado sem fundo',
+                    type: 'error',
+                    timer: 2000,
+                    onOpen: () => {
+                        swal.showLoading()
+                    }
+                }).then((result) => {
+                    if (result.dismiss === 'timer') {
+                        location.reload();
+                    } else {
+                        location.reload();
+                    }
+                });
+            }
+        });
+
+    }
+
+</script>
 {% endblock %}
