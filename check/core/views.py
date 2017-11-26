@@ -317,6 +317,16 @@ class BaixaChequesView(ListView):
         ctx['bread_item'] = 'Baixa de cheques'
         return ctx
 
+class RepasseChequesView(ListView):
+    template_name = 'repasse.html'
+    model = Recebido
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Repasse de cheques'
+        return ctx
+
 
 def get_situacao_cliente(request):
     id = request.GET.get('id')

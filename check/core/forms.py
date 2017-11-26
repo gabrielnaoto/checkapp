@@ -7,9 +7,10 @@ from check.core.models import Cliente, Fornecedor, Banco, Empresa, Emitido, Rece
 
 class CustomFormHelper(FormHelper):
     form_method = 'post'
-    form_class = 'form-group'
     label_class = 'col-lg-2'
     field_class = 'col-lg-12'
+
+
 
     def __init__(self, *args, **kwargs):
         super(CustomFormHelper, self).__init__(*args, **kwargs)
