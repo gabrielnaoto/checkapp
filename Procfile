@@ -1,1 +1,1 @@
-gunicorn check.core.wsgi:application
+gunicorn check.core.wsgi --log-file -
