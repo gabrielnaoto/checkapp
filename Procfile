@@ -1,1 +1,1 @@
-gunicorn check.core.wsgi
+gunicorn check.core.wsgi:application
