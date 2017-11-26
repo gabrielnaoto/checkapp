@@ -1,1 +1,1 @@
-web: gunicorn check:core
+web: gunicorn core:app
