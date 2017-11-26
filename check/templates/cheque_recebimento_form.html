@@ -25,9 +25,13 @@ $("#id_cliente").change(function() {
         console.log(data)
             if (data['quantidade'] > 0){
                  $("#id_cliente").addClass("is-invalid");
+                 if ($("#cliente_situacao_invalida").html() == undefined){
+
                  $("#div_id_cliente > div.col-lg-12").append('<span id="cliente_situacao_invalida" class="invalid-feedback"><strong>O cliente possui cheques sem fundo.</strong></span>');
+                 }
+                 var cheque = ' cheques ';
                 if(data['quantidade'] == 1){
-                    cheque = ' cheque '
+                    cheque = ' cheque ';
                 }
             var mensagem = 'Este cliente possui ' + data['quantidade'] + cheque + 'sem fundo'
                 swal('Atenção', mensagem,'error');

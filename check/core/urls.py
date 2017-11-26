@@ -35,7 +35,9 @@ urlpatterns = [
     url(r'^cheque/receber/delete/(?P<pk>\d+)$', DeleteChequeRecebido.as_view(), name='delete_cheque_recebimento'),
 
     url(r'^baixa/$', BaixaChequesView.as_view(), name='baixa'),
+    url(r'^repasse/$', RepasseChequesView.as_view(), name='repasse'),
 
     url(r'^ajax/get_situacao_cliente/$', get_situacao_cliente, name='get_situacao_cliente'),
     url(r'^ajax/efetuar_baixa/$', efetuar_baixa, name='efetuar_baixa'),
+    url(r'^ajax/efetuar_repasse/$', efetuar_repasse, name='efetuar_repasse'),
 ]

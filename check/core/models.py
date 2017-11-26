@@ -54,7 +54,7 @@ class Fornecedor(TemContato, TemEndereco, models.Model):
     ie = models.CharField(max_length=50, verbose_name='inscrição estadual', blank=True, null=True)
     rg = models.CharField(max_length=50, verbose_name='RG', blank=True, null=True)
     responsavel = models.CharField(max_length=50, verbose_name='responsável')
-    data_cadastro = models.DateField(default=timezone.now())
+    data_cadastro = models.DateField(default=timezone.now)
 
 
     def __str__(self):
@@ -65,7 +65,7 @@ class Banco(TemContato, TemEndereco, models.Model):
     nome = models.CharField(max_length=50)
     agencia = models.IntegerField(verbose_name='agência')
     contato = models.CharField(max_length=50, verbose_name='pessoa de contato')
-    data_cadastro = models.DateField(default=timezone.now())
+    data_cadastro = models.DateField(default=timezone.now)
 
     def __str__(self):
         return str(self.agencia) + " " + self.nome
@@ -75,9 +75,7 @@ class Cliente(TemContato, TemEndereco, models.Model):
     nome = models.CharField(max_length=50)
     cpf = models.CharField(max_length=50, verbose_name='CPF')
     rg = models.CharField(max_length=50, verbose_name='RG')
-    data_cadastro = models.DateField(default=timezone.now())
-    negativado = models.BooleanField()
-    limite_compra = models.FloatField(verbose_name='limite de compra')
+    data_cadastro = models.DateField(default=timezone.now)
 
     def __str__(self):
         return self.nome
@@ -90,20 +88,21 @@ class Cheque(models.Model):
     numero_cheque = models.IntegerField()
     banco = models.ForeignKey(Banco)
     tipo = models.IntegerField(choices=TIPO_CHEQUE)
-    data_entrada = models.DateField()
+    # data_entrada = models.DateField()
     data_desconto = models.DateField()
     valor = models.FloatField()
-    data_cadastro = models.DateField(default=timezone.now())
+    data_cadastro = models.DateField(default=timezone.now)
 
     class Meta:
         abstract = True
 
 class Recebido(Cheque):
-    data_lancamento = models.DateField()
+    # data_lancamento = models.DateField()
     cliente = models.ForeignKey(Cliente)
     tem_fundo = models.BooleanField(default=True)
     foi_repassado = models.BooleanField(default=False)
     foi_compensado = models.BooleanField(default=False)
+    repassado = models.ForeignKey(Fornecedor, blank=True, null=True)
 
     def __str__(self):
         return str(self.numero_cheque)

@@ -3,8 +3,45 @@
 
 {% block content %}
 
+<div class="card">
+    <div class="card-body">
+        <h4>Repasse de cheques</h4>
 
-<table class="table table-hover table-responsive">
+<form class="container">
+
+  <div class="row">
+
+    <div class="col-md-3 mb-3">
+      <label for="select">Coluna</label>
+       <select id="select" class="form-control">
+        <option value="0" selected>Número</option>
+        <option value="1">Data de emissão</option>
+        <option value="2">Emitente</option>
+        <option value="3">Agência</option>
+        <option value="4">Banco</option>
+    </select>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="input">Pesquisa</label>
+       <input type="text" class="form-control" id="input" placeholder="pesquisar"
+           onkeyup="pesquisar()"/>
+      <div class="invalid-feedback">
+        Please provide a valid zip.
+      </div>
+    </div>
+      <div class="col-md-6 mb-3">
+      <label for="select_fornecedor">Repassar para</label>
+      <select id="select_fornecedor" class="form-control" required>
+        {% for fornecedor in fornecedores%}
+        <option value="{{ fornecedor.id }}">{{ fornecedor.nome }}</option>
+        {% endfor %}
+    </select>
+
+    </div>
+  </div>
+</form>
+
+<table class="table table-hover col-lg-12" id="table">
     <thead>
     <tr>
         <th scope="col">#</th>
@@ -12,66 +49,98 @@
         <th scope="col">Emitente</th>
         <th scope="col">Agência</th>
         <th scope="col">Banco</th>
-        <th scope="col">Sem fundo</th>
-        <th scope="col">Foi compensado</th>
-        <th scope="col">Foi repassado</th>
-        <th scope="col">Baixar</th>
+        <th scope="col">Repassar</th>
 
     </tr>
     </thead>
     <tbody>
+    {% if object_list %}
     {% for cheque in object_list %}
 
-    <tr class="{% if not cheque.tem_fundo%}table-danger{% elif cheque.foi_compensado %}text-success{% endif %}">
-        <th scope="row">{{ cheque.numero_cheque }}</th>
-        <td>{{ cheque.data_lancamento | date:"d/m/Y" }}</td>
+    <tr>
+        <td>{{ cheque.numero_cheque }}</td>
+        <td>{{ cheque.data_cadastro | date:"d/m/Y" }}</td>
         <td>{{ cheque.cliente }}</td>
         <td>{{ cheque.banco.agencia }}</td>
         <td>{{ cheque.banco.nome }}</td>
-        <td>{{ cheque.tem_fundo | yesno:"sim,não"}}</td>
-        <td>{{ cheque.foi_compensado | yesno:"sim,não" }}</td>
-        <td>{{ cheque.foi_repassado | yesno:"sim,não" }}</td>
-        <td><a href="javascript:void(0)" onclick="efetuar_baixa({{ cheque.id }})"><i class="fa fa-check"></i></a></td>
+        <td><a href="javascript:void(0)" onclick="efetuar_repasse({{ cheque.id }}, {{cheque.numero_cheque}})"><i class="fa fa-arrow-right"></i></a>
+        </td>
     </tr>
 
     {% endfor %}
+    {% else %}
+    <tr >
+        <td colspan="6">
+            Todos os cheques já foram repassados ou compensados.
+        </td>
+            </tr>
+    {% endif %}
     </tbody>
 </table>
+    </div>
+</div>
 
 
 {% endblock %}
 
 {% block js %}
 <script>
-function efetuar_baixa(id) {
-    swal({
-        title: 'Atenção',
-        text: "O cheque tem fundo?",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sim',
-        cancelButtonText: 'Não'
-    }).then((result) => {
-            $.ajax({
-                url: '{% url "efetuar_baixa" %}',
-                data: {
-                    'id': id,
-                    'tem_fundo': result.value
-                },
-                dataType: 'json',
-                success: function(data) {
-                    console.log(data)
+function pesquisar() {
+   var index = $("#select").val();
+  // Declare variables
+  var input, filter, table, tr, td, i;
+  input = document.getElementById("input");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("table");
+  tr = table.getElementsByTagName("tr");
 
-                }
-            });
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[index];
+    if (td) {
+      if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+
+
+
+
+</script>
+<script>
+function efetuar_repasse(id_cheque, cheque_numero) {
+    var fornecedor = $("#select_fornecedor option:selected").text();
+    var id_fornecedor = $("#select_fornecedor").val();
+        var mensagem = "Repassar cheque " + cheque_numero + " para o fornecedor " + fornecedor + "?"; swal({
+            title: 'Atenção',
+            text: mensagem,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não'
+        }).then((result) => {
             if (result.value) {
-
-
-               swal({
-                    title: 'Realizando baixa',
-                    text: 'O cheque foi marcado com fundo',
+                $.ajax({
+                    url: '{% url "efetuar_repasse" %}',
+                    data: {
+                        'id_cheque': id_cheque,
+                        'id_fornecedor': id_fornecedor
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log(data)
+                    }
+                });
+                swal({
+                    title: 'Operação realizada',
+                    text: 'Repassando cheque',
                     type: 'success',
                     timer: 2000,
                     onOpen: () => {
@@ -83,27 +152,17 @@ function efetuar_baixa(id) {
                     } else {
                         location.reload();
                     }
+
                 });
             } else {
                 swal({
-                    title: 'Realizando baixa',
-                    text: 'O cheque foi marcado sem fundo',
-                    type: 'error',
-                    timer: 2000,
-                    onOpen: () => {
-                        swal.showLoading()
-                    }
-                }).then((result) => {
-                    if (result.dismiss === 'timer') {
-                        location.reload();
-                    } else {
-                        location.reload();
-                    }
+                    title: 'Operação cancelada',
+                    text: 'O usuário cancelou o repasse',
+                    type: 'error'
                 });
             }
         });
 
     }
-
 </script>
 {% endblock %}

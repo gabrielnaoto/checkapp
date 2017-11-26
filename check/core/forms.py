@@ -61,7 +61,7 @@ class EmpresaForm(ModelForm):
 
 
 class ChequeEmitidoForm(ModelForm):
-    data_entrada = DateField(widget=TextInput(attrs={'type': 'date'}))
+    # data_entrada = DateField(widget=TextInput(attrs={'type': 'date'}))
     class Meta:
         model = Emitido
         # fields = '__all__'
@@ -73,8 +73,8 @@ class ChequeEmitidoForm(ModelForm):
 
 
 class ChequeRecebidoForm(ModelForm):
-    data_entrada = DateField(widget=TextInput(attrs={'type': 'date'}))
-    data_lancamento = DateField(widget=TextInput(attrs={'type': 'date'}))
+    # data_entrada = DateField(widget=TextInput(attrs={'type': 'date'}))
+    # data_lancamento = DateField(widget=TextInput(attrs={'type': 'date'}))
     data_desconto = DateField(widget=TextInput(attrs={'type': 'date'}))
 
     class Meta:

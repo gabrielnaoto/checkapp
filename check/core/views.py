@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 # Create your views here.
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -21,6 +21,20 @@ class IndexView(LoginRequiredMixin, TemplateView):
         total_recebido = Recebido.objects.all().aggregate(Sum('valor'))
         if total_recebido['valor__sum'] is not None:
             ctx['total_recebido'] = total_recebido
+        total_repassado = Recebido.objects.filter(foi_repassado=True).aggregate(Sum('valor'))
+        if total_repassado['valor__sum'] is not None:
+            ctx['total_repassado'] = total_repassado
+        qtd_com_fundo = Recebido.objects.filter(tem_fundo=True).aggregate(Count('valor'))
+        if qtd_com_fundo['valor__count'] is not None:
+            ctx['qtd_com_fundo'] = qtd_com_fundo
+        qtd_sem_fundo = Recebido.objects.filter(tem_fundo=False).aggregate(Count('valor'))
+        if qtd_sem_fundo['valor__count'] is not None:
+            ctx['qtd_sem_fundo'] = qtd_sem_fundo
+        qtd_nao_descontado = Recebido.objects.filter(foi_compensado=False).aggregate(Count('valor'))
+        if qtd_nao_descontado['valor__count'] is not None:
+            ctx['qtd_nao_descontado'] = qtd_nao_descontado
+        ctx['recebidos_desc_hoje'] = Recebido.objects.filter(data_desconto=timezone.now())
+        ctx['emitidos_desc_hoje'] = Emitido.objects.filter(data_desconto=timezone.now())
         return ctx
 
 
@@ -311,6 +325,9 @@ class BaixaChequesView(ListView):
     template_name = 'baixa.html'
     model = Recebido
 
+    def get_queryset(self):
+        return Recebido.objects.filter(foi_repassado=False)
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Controle de cheques'
@@ -325,11 +342,17 @@ class RepasseChequesView(ListView):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Controle de cheques'
         ctx['bread_item'] = 'Repasse de cheques'
+        ctx['fornecedores'] = Fornecedor.objects.all()
         return ctx
+
+    def get_queryset(self):
+        return Recebido.objects.filter(foi_repassado=False).filter(foi_compensado=False)
 
 
 def get_situacao_cliente(request):
     id = request.GET.get('id')
+    if id == "":
+        return JsonResponse({'status': False})
     recebidos = len(list(Recebido.objects.filter(cliente_id=id).filter(tem_fundo=False)))
     ctx = {'quantidade': recebidos}
     return JsonResponse(ctx)
@@ -347,6 +370,17 @@ def efetuar_baixa(request):
     cheque = Recebido.objects.get(id=id)
     cheque.tem_fundo = tem_fundo
     cheque.foi_compensado = True
+    cheque.save()
+    ctx = {'status': True}
+    return JsonResponse(ctx)
+
+def efetuar_repasse(request):
+    id_fornecedor = request.GET.get('id_fornecedor')
+    id_cheque = request.GET.get('id_cheque')
+    forneceodor = Fornecedor.objects.get(id=id_fornecedor)
+    cheque = Recebido.objects.get(id=id_cheque)
+    cheque.repassado = forneceodor
+    cheque.foi_repassado = True
     cheque.save()
     ctx = {'status': True}
     return JsonResponse(ctx)

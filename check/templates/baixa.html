@@ -2,22 +2,35 @@
 
 
 {% block content %}
+<div class="card">
+    <div class="card-body">
 
-<form class="form-inline">
-<select id="select" class="form-control col-lg-2" >
-    <option value="0">Número</option>
-    <option value="1">Data de emissão</option>
-    <option value="2">Emitente</option>
-    <option value="3">Agência</option>
-    <option value="4">Banco</option>
-    <option value="5">Sem fundo</option>
-    <option value="6">Foi compensado</option>
-    <option value="7">Foi repassado</option>
-    <option value="8">Baixar</option>
-</select>
+<h4>Baixa de cheques</h4>
 
-<input type="text" class="form-control col-lg-4" id="input" placeholder="pesquisar"
-       onkeyup="pesquisar()"/>
+
+
+<form class="container">
+
+  <div class="row">
+
+    <div class="col-md-3 mb-3">
+      <label for="select">Coluna</label>
+       <select id="select" class="form-control">
+        <option value="0" selected>Número</option>
+        <option value="1">Data de emissão</option>
+        <option value="2">Emitente</option>
+        <option value="3">Agência</option>
+        <option value="4">Banco</option>
+    </select>
+    </div>
+    <div class="col-md-3 mb-3">
+      <label for="input">Pesquisa</label>
+       <input type="text" class="form-control" id="input" placeholder="pesquisar"
+           onkeyup="pesquisar()"/>
+
+    </div>
+
+  </div>
 </form>
 
 <table class="table table-hover col-lg-12" id="table">
@@ -30,7 +43,7 @@
         <th scope="col">Banco</th>
         <th scope="col">Sem fundo</th>
         <th scope="col">Foi compensado</th>
-        <th scope="col">Foi repassado</th>
+        <th scope="col">Valor</th>
         <th scope="col">Baixar</th>
 
     </tr>
@@ -40,19 +53,21 @@
 
     <tr class="{% if not cheque.tem_fundo%}table-danger{% elif cheque.foi_compensado %}text-success{% endif %}">
         <td>{{ cheque.numero_cheque }}</td>
-        <td>{{ cheque.data_lancamento | date:"d/m/Y" }}</td>
+        <td>{{ cheque.data_cadastro | date:"d/m/Y" }}</td>
         <td>{{ cheque.cliente }}</td>
         <td>{{ cheque.banco.agencia }}</td>
         <td>{{ cheque.banco.nome }}</td>
         <td>{{ cheque.tem_fundo | yesno:"sim,não"}}</td>
         <td>{{ cheque.foi_compensado | yesno:"sim,não" }}</td>
-        <td>{{ cheque.foi_repassado | yesno:"sim,não" }}</td>
+        <td>{{ cheque.valor }}</td>
         <td><a href="javascript:void(0)" onclick="efetuar_baixa({{ cheque.id }})"><i class="fa fa-check"></i></a></td>
     </tr>
 
     {% endfor %}
     </tbody>
 </table>
+    </div>
+</div>
 
 
 {% endblock %}
@@ -80,6 +95,7 @@ function pesquisar() {
     }
   }
 }
+
 
 </script>
 <script>
@@ -144,6 +160,7 @@ function efetuar_baixa(id) {
         });
 
     }
+
 
 
 </script>
