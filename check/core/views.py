@@ -1,17 +1,27 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
-
 # Create your views here.
+from django.db.models import Sum
+from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views import View
+from django.utils import timezone
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 
-from check.core.forms import ClienteForm, FornecedorForm, TerceiroForm, BancoForm, EmpresaForm, ChequeForm
-from check.core.models import Cliente, Fornecedor, Banco, Terceiro, Empresa, Cheque
+from check.core.forms import ClienteForm, FornecedorForm, BancoForm, EmpresaForm, ChequeEmitidoForm, ChequeRecebidoForm
+from check.core.models import Cliente, Fornecedor, Banco, Empresa, Emitido, Recebido
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
-    template_name = 'template.html'
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        total_emitido = Emitido.objects.all().aggregate(Sum('valor'))
+        if total_emitido['valor__sum'] is not None:
+            ctx['total_emitido'] = total_emitido
+        total_recebido = Recebido.objects.all().aggregate(Sum('valor'))
+        if total_recebido['valor__sum'] is not None:
+            ctx['total_recebido'] = total_recebido
+        return ctx
 
 
 class ListCliente(LoginRequiredMixin, ListView):
@@ -33,6 +43,7 @@ class CreateCliente(LoginRequiredMixin, CreateView):
     form_class = ClienteForm
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_cliente')
+
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -86,6 +97,7 @@ class CreateFornecedor(LoginRequiredMixin, CreateView):
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_fornecedor')
 
+
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
@@ -118,58 +130,6 @@ class DeleteFornecedor(LoginRequiredMixin, DeleteView):
         return ctx
 
 
-class ListTerceiro(LoginRequiredMixin, ListView):
-    model = Terceiro
-    template_name = 'object_list.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Terceiro'
-        ctx['create_url'] = 'create_terceiro'
-        ctx['edit_url'] = 'update_terceiro'
-        ctx['delete_url'] = 'delete_terceiro'
-        return ctx
-
-
-class CreateTerceiro(LoginRequiredMixin, CreateView):
-    model = Terceiro
-    form_class = TerceiroForm
-    template_name = 'object_form.html'
-    success_url = reverse_lazy('list_terceiro')
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Terceiro'
-        return ctx
-
-
-class UpdateTerceiro(LoginRequiredMixin, UpdateView):
-    model = Terceiro
-    form_class = TerceiroForm
-    template_name = 'object_form.html'
-    success_url = reverse_lazy('list_terceiro')
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Terceiro'
-        return ctx
-
-
-class DeleteTerceiro(LoginRequiredMixin, DeleteView):
-    model = Terceiro
-    template_name = 'object_confirm_delete.html'
-    success_url = reverse_lazy('list_terceiro')
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Terceiro'
-        return ctx
-
-
 class ListBanco(LoginRequiredMixin, ListView):
     model = Banco
     template_name = 'object_list.html'
@@ -189,6 +149,7 @@ class CreateBanco(LoginRequiredMixin, CreateView):
     form_class = BancoForm
     template_name = 'object_form.html'
     success_url = reverse_lazy('list_banco')
+
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -222,77 +183,149 @@ class DeleteBanco(LoginRequiredMixin, DeleteView):
         return ctx
 
 
-def empresa(request):
-    return render(request, "template.html",
-                  {"alert_danger": "Você ainda não fez a configuração inicial da sua empresa"})
-
-
 class UpdateEmpresa(LoginRequiredMixin, UpdateView):
     model = Empresa
     form_class = EmpresaForm
     template_name = 'object_form.html'
-    success_url = reverse_lazy('list_empresa')
+    success_url = reverse_lazy('index')
 
     def get_object(self):
         print(self.request.user.empresa)
         print(type(self.request.user.empresa))
-        e = Empresa.objects.get(id=self.request.user.empresa.id)
-        return e;
+        try:
+            return Empresa.objects.get(id=self.request.user.empresa.id)
+        except Exception:
+            return None;
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['bread_menu'] = 'Cadastros'
         ctx['bread_item'] = 'Empresa'
+        if self.get_object() == None:
+            ctx['alert_danger'] = 'Você ainda não fez a configuração inicial da sua empresa'
         return ctx
 
 
-class ListCheque(LoginRequiredMixin, ListView):
-    model = Cheque
-    template_name = 'object_list.html'
+class ListChequeEmitido(LoginRequiredMixin, ListView):
+    model = Emitido
+    template_name = 'cheque_list.html'
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Cheque'
-        ctx['create_url'] = 'create_cheque'
-        ctx['edit_url'] = 'update_cheque'
-        ctx['delete_url'] = 'delete_cheque'
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Emissão'
+        ctx['create_url'] = 'create_cheque_emissao'
+        ctx['edit_url'] = 'update_cheque_emissao'
+        ctx['delete_url'] = 'delete_cheque_emissao'
         return ctx
 
 
-class CreateCheque(LoginRequiredMixin, CreateView):
-    model = Cheque
-    form_class = ChequeForm
+class CreateChequeEmitido(LoginRequiredMixin, CreateView):
+    model = Emitido
+    form_class = ChequeEmitidoForm
     template_name = 'object_form.html'
-    success_url = reverse_lazy('list_cheque')
+    success_url = reverse_lazy('list_cheque_emissao')
+
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Cheque'
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Emissão'
         return ctx
 
 
-class UpdateCheque(LoginRequiredMixin, UpdateView):
-    model = Cheque
-    form_class = ChequeForm
+class UpdateChequeEmitido(LoginRequiredMixin, UpdateView):
+    model = Emitido
+    form_class = ChequeEmitidoForm
     template_name = 'object_form.html'
-    success_url = reverse_lazy('list_cheque')
+    success_url = reverse_lazy('list_cheque_emissao')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Cheque'
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Emissão'
         return ctx
 
 
-class DeleteCheque(LoginRequiredMixin, DeleteView):
-    model = Cheque
+class DeleteChequeEmitido(LoginRequiredMixin, DeleteView):
+    model = Emitido
     template_name = 'object_confirm_delete.html'
-    success_url = reverse_lazy('list_cheque')
+    success_url = reverse_lazy('list_cheque_emissao')
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['bread_menu'] = 'Cadastros'
-        ctx['bread_item'] = 'Cheque'
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Recebimento'
         return ctx
+
+
+class ListChequeRecebido(LoginRequiredMixin, ListView):
+    model = Recebido
+    template_name = 'cheque_list.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Recebimento'
+        ctx['create_url'] = 'create_cheque_recebimento'
+        ctx['edit_url'] = 'update_cheque_recebimento'
+        ctx['delete_url'] = 'delete_cheque_recebimento'
+        return ctx
+
+
+class CreateChequeRecebido(LoginRequiredMixin, CreateView):
+    model = Recebido
+    form_class = ChequeRecebidoForm
+    template_name = 'cheque_recebimento_form.html'
+    success_url = reverse_lazy('list_cheque_recebimento')
+
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Recebimento'
+        return ctx
+
+
+class UpdateChequeRecebido(LoginRequiredMixin, UpdateView):
+    model = Recebido
+    form_class = ChequeRecebidoForm
+    template_name = 'cheque_recebimento_form.html'
+    success_url = reverse_lazy('list_cheque_recebimento')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Recebimento'
+        return ctx
+
+
+class DeleteChequeRecebido(LoginRequiredMixin, DeleteView):
+    model = Recebido
+    template_name = 'object_confirm_delete.html'
+    success_url = reverse_lazy('list_cheque_recebimento')
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Recebimento'
+        return ctx
+
+class BaixaChequesView(ListView):
+    template_name = 'baixa.html'
+    model = Recebido
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['bread_menu'] = 'Controle de cheques'
+        ctx['bread_item'] = 'Baixa de cheques'
+        return ctx
+
+
+def get_situacao_cliente(request):
+    id = request.GET.get('id')
+    recebidos = len(list(Recebido.objects.filter(cliente_id=id).filter(tem_fundo=False)))
+    ctx = {'quantidade': recebidos}
+    return JsonResponse(ctx)
+
+

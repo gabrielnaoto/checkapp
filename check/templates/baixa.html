@@ -1,0 +1,38 @@
+{% extends 'template.html' %}
+
+
+{% block content %}
+
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Data de desconto</th>
+        <th scope="col">Data de emissão</th>
+        <th scope="col">Emitente</th>
+        <th scope="col">Agência</th>
+        <th scope="col">Banco</th>
+        <th scope="col">Sem fundo</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% for cheque in object_list %}
+
+    <tr>
+        <th scope="row">{{ cheque.numero_cheque }}</th>
+        <td>{{ cheque.data_desconto }}</td>
+        <td>{{ cheque.data_emissao }}</td>
+        <td>{{ cheque.cliente }}</td>
+        <td>{{ cheque.banco.agencia }}</td>
+        <td>{{ cheque.banco.nome }}</td>
+        <td>{{ cheque.tem_fundo }}</td>
+    </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

@@ -35,11 +35,9 @@
                     Cadastros
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <!--<a class="dropdown-item" href="form.html">Empresa</a>-->
 
-                    <!--<a class="dropdown-item" href="list.html">Fonecedor</a>-->
+
                     <a class="dropdown-item" href="{% url 'list_cliente' %}">Cliente</a>
-                    <a class="dropdown-item" href="{% url 'list_terceiro' %}">Terceiro</a>
                     <a class="dropdown-item" href="{% url 'list_fornecedor' %}">Fornecedor</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'list_banco' %}">Banco</a>
@@ -55,21 +53,33 @@
                     Controle de cheques
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="">Receber</a>
-                    <a class="dropdown-item" href="{% url 'list_cheque' %}">Emitir</a>
-                    <a class="dropdown-item" href="">Repassar</a>
+                    <a class="dropdown-item" href="{% url 'list_cheque_recebimento' %}">Recebimento </a>
+                    <a class="dropdown-item" href="{% url 'list_cheque_emissao' %}">Emissão </a>
+                    <a class="dropdown-item" href="">Repasse </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'baixa' %}">Baixa de cheques </a>
                 </div>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'empresa' %}">Configurações</a>
-            </li>
 
         </ul>
-        <a class="text-white" style="margin-right: 15px;"><i class="fa fa-user" style="margin-right: 5px;"></i> {{ user.username }} </a>
 
-        <a class="btn btn-light my-2 my-sm-0" href="{% url 'logout' %}">Encerrar sessão <i
-                class="fa fa-sign-out"></i></a>
+        <div class="dropdown" style="margin-right: 10px;">
+            <a class="btn btn-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+               data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-user" style="margin-right: 5px;"></i>
+                {{ user.username }}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'empresa' %}">Dados da empresa</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'logout' %}">Encerrar sessão <i class="fa fa-sign-out"></i></a>
+            </div>
+
+
+        </div>
+
     </div>
 </nav>
 
@@ -118,22 +128,6 @@
 
     {% block content %}
 
-    <div class="card">
-        <div class="card-body">
-            <h4>Cheques emitidos</h4>
-
-            <ul class="list-group bg-danger">
-                <li class="list-group-item list-group-item-action">Lorem ipsum dolar</li>
-                <li class="list-group-item list-group-item-action">Lorem ipsum dolar</li>
-                <li class="list-group-item list-group-item-action">Lorem ipsum dolar</li>
-                <li class="list-group-item list-group-item-action">Lorem ipsum dolar</li>
-
-
-            </ul>
-
-
-        </div>
-    </div>
 
     {% endblock %}
 
@@ -148,9 +142,7 @@
     </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
         integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
         crossorigin="anonymous"></script>
@@ -158,6 +150,11 @@
         integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.0.3/sweetalert2.all.js"></script>
+
+{% block js %}
+
+{% endblock %}
 
 
 </body>

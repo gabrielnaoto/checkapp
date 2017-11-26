@@ -1,0 +1,32 @@
+{% extends 'template.html' %}
+
+{% load core_extras %}
+{% block content %}
+<div class="row">
+    <div class="col-lg-4" style="padding: 10px;">
+        <div class="alert alert-success" role="alert">
+            <label>cheques recebidos</label>
+            <h5>R$ {% if total_recebido %}{{ total_recebido.valor__sum |floatformat:2}}{% else %} 0,00 {% endif %} <i
+                    class="fa fa-arrow-down"></i></h5>
+        </div>
+    </div>
+    <div class="col-lg-4" style="padding: 10px;">
+        <div class="alert alert-danger" role="alert">
+            <label>cheques emitidos</label>
+            <h5>R$ {% if total_emitido %}{{ total_emitido.valor__sum |floatformat:2 }}{% else %} 0,00 {% endif %} <i
+                    class="fa fa-arrow-up"></i></h5>
+        </div>
+    </div>
+    <div class="col-lg-4" style="padding: 10px;">
+        <div class="alert alert-info" role="alert">
+            <label>cheques repassados</label>
+            <h5>R$ {% if total_repassado %}{{ total_repassado.valor__sum|floatformat:2 }}{% else %} 0,00 {% endif %} <i
+                    class="fa fa-arrow-right"></i></h5>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock %}

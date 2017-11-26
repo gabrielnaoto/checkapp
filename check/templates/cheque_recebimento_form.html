@@ -1,0 +1,46 @@
+{% extends 'template.html' %}
+
+{% load crispy_forms_tags  %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h4>Cadastro de {{ bread_item | lower}}</h4>
+        {% crispy form  %}
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+
+$("#id_cliente").change(function() {
+    $.ajax({
+        url: '{% url "get_situacao_cliente" %}',
+        data: {
+            'id': $(this).val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+        console.log(data)
+            if (data['quantidade'] > 0){
+                 $("#id_cliente").addClass("is-invalid");
+                 $("#div_id_cliente > div.col-lg-12").append('<span id="cliente_situacao_invalida" class="invalid-feedback"><strong>O cliente possui cheques sem fundo.</strong></span>');
+                if(data['quantidade'] == 1){
+                    cheque = ' cheque '
+                }
+            var mensagem = 'Este cliente possui ' + data['quantidade'] + cheque + 'sem fundo'
+                swal('Atenção', mensagem,'error');
+
+             } else {
+                    $("#id_cliente").removeClass("is-invalid");
+                    $("#cliente_situacao_invalida").detach();
+             }
+        }
+    });
+});
+
+
+
+</script>
+{% endblock %}

@@ -1,8 +1,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from django.forms import ModelForm
+from django.forms import ModelForm, forms, DateField, TextInput
 
-from check.core.models import Cliente, Fornecedor, Banco, Terceiro, Empresa, Cheque
+from check.core.models import Cliente, Fornecedor, Banco, Empresa, Emitido, Recebido
 
 
 class CustomFormHelper(FormHelper):
@@ -19,42 +19,36 @@ class CustomFormHelper(FormHelper):
 class ClienteForm(ModelForm):
     class Meta:
         model = Cliente
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['data_cadastro']
 
     def __init__(self, *args, **kwargs):
         super(ClienteForm, self).__init__(*args, **kwargs)
         self.helper = CustomFormHelper()
 
 
-
 class FornecedorForm(ModelForm):
     class Meta:
         model = Fornecedor
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['data_cadastro']
 
     def __init__(self, *args, **kwargs):
         super(FornecedorForm, self).__init__(*args, **kwargs)
         self.helper = CustomFormHelper()
-        
-        
+
+
 class BancoForm(ModelForm):
     class Meta:
         model = Banco
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['data_cadastro']
 
     def __init__(self, *args, **kwargs):
         super(BancoForm, self).__init__(*args, **kwargs)
         self.helper = CustomFormHelper()
-        
-class TerceiroForm(ModelForm):
-    class Meta:
-        model = Terceiro
-        fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
-        super(TerceiroForm, self).__init__(*args, **kwargs)
-        self.helper = CustomFormHelper()
-        
+
 class EmpresaForm(ModelForm):
     class Meta:
         model = Empresa
@@ -63,12 +57,30 @@ class EmpresaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(EmpresaForm, self).__init__(*args, **kwargs)
         self.helper = CustomFormHelper()
-        
-class ChequeForm(ModelForm):
+
+
+class ChequeEmitidoForm(ModelForm):
+    data_entrada = DateField(widget=TextInput(attrs={'type': 'date'}))
     class Meta:
-        model = Cheque
-        fields = '__all__'
+        model = Emitido
+        # fields = '__all__'
+        exclude = ['data_cadastro']
 
     def __init__(self, *args, **kwargs):
-        super(ChequeForm, self).__init__(*args, **kwargs)
+        super(ChequeEmitidoForm, self).__init__(*args, **kwargs)
+        self.helper = CustomFormHelper()
+
+
+class ChequeRecebidoForm(ModelForm):
+    data_entrada = DateField(widget=TextInput(attrs={'type': 'date'}))
+    data_lancamento = DateField(widget=TextInput(attrs={'type': 'date'}))
+    data_desconto = DateField(widget=TextInput(attrs={'type': 'date'}))
+
+    class Meta:
+        model = Recebido
+        # fields = '__all__'
+        exclude = ['data_cadastro', 'tem_fundo', 'foi_repassado', 'foi_compensado']
+
+    def __init__(self, *args, **kwargs):
+        super(ChequeRecebidoForm, self).__init__(*args, **kwargs)
         self.helper = CustomFormHelper()

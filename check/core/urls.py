@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^cliente/add$', CreateCliente.as_view(), name='create_cliente'),
     url(r'^cliente/edit/(?P<pk>\d+)$', UpdateCliente.as_view(), name='update_cliente'),
     url(r'^cliente/delete/(?P<pk>\d+)$', DeleteCliente.as_view(), name='delete_cliente'),
-    
+
     url(r'^fornecedor/$', ListFornecedor.as_view(), name='list_fornecedor'),
     url(r'^fornecedor/add$', CreateFornecedor.as_view(), name='create_fornecedor'),
     url(r'^fornecedor/edit/(?P<pk>\d+)$', UpdateFornecedor.as_view(), name='update_fornecedor'),
@@ -22,15 +22,19 @@ urlpatterns = [
     url(r'^banco/edit/(?P<pk>\d+)$', UpdateBanco.as_view(), name='update_banco'),
     url(r'^banco/delete/(?P<pk>\d+)$', DeleteBanco.as_view(), name='delete_banco'),
 
-    url(r'^terceiro/$', ListTerceiro.as_view(), name='list_terceiro'),
-    url(r'^terceiro/add$', CreateTerceiro.as_view(), name='create_terceiro'),
-    url(r'^terceiro/edit/(?P<pk>\d+)$', UpdateTerceiro.as_view(), name='update_terceiro'),
-    url(r'^terceiro/delete/(?P<pk>\d+)$', DeleteTerceiro.as_view(), name='delete_terceiro'),
-    
     url(r'^empresa/$', UpdateEmpresa.as_view(), name='empresa'),
-    
-    url(r'^cheque/$', ListCheque.as_view(), name='list_cheque'),
-    url(r'^cheque/add$', CreateCheque.as_view(), name='create_cheque'),
-    url(r'^cheque/edit/(?P<pk>\d+)$', UpdateCheque.as_view(), name='update_cheque'),
-    url(r'^cheque/delete/(?P<pk>\d+)$', DeleteCheque.as_view(), name='delete_cheque'),
+
+    url(r'^cheque/emitir/$', ListChequeEmitido.as_view(), name='list_cheque_emissao'),
+    url(r'^cheque/emitir/add$', CreateChequeEmitido.as_view(), name='create_cheque_emissao'),
+    url(r'^cheque/emitir/edit/(?P<pk>\d+)$', UpdateChequeEmitido.as_view(), name='update_cheque_emissao'),
+    url(r'^cheque/emitir/delete/(?P<pk>\d+)$', DeleteChequeEmitido.as_view(), name='delete_cheque_emissao'),
+
+    url(r'^cheque/receber/$', ListChequeRecebido.as_view(), name='list_cheque_recebimento'),
+    url(r'^cheque/receber/add$', CreateChequeRecebido.as_view(), name='create_cheque_recebimento'),
+    url(r'^cheque/receber/edit/(?P<pk>\d+)$', UpdateChequeRecebido.as_view(), name='update_cheque_recebimento'),
+    url(r'^cheque/receber/delete/(?P<pk>\d+)$', DeleteChequeRecebido.as_view(), name='delete_cheque_recebimento'),
+
+url(r'^baixa/$', BaixaChequesView.as_view(), name='baixa'),
+
+    url(r'^ajax/get_situacao_cliente/$', get_situacao_cliente, name='get_situacao_cliente'),
 ]
