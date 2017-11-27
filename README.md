@@ -1,6 +1,13 @@
-# man_check_control
+# CheckApp
 
 This is a simple django-app written in Python to control checks.
+
+Avaiable at http://man-check-control.herokuapp.com/
+
+user: usuario
+
+pass: minhasenha
+
 
 ### Goals
 
