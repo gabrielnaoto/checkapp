@@ -80,7 +80,7 @@ class ChequeRecebidoForm(ModelForm):
     class Meta:
         model = Recebido
         # fields = '__all__'
-        exclude = ['data_cadastro', 'tem_fundo', 'foi_repassado', 'foi_compensado']
+        exclude = ['data_cadastro', 'tem_fundo', 'foi_repassado', 'foi_compensado', 'repassado']
 
     def __init__(self, *args, **kwargs):
         super(ChequeRecebidoForm, self).__init__(*args, **kwargs)
