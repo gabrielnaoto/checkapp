@@ -30,9 +30,12 @@ class IndexView(LoginRequiredMixin, TemplateView):
         qtd_sem_fundo = Recebido.objects.filter(tem_fundo=False).aggregate(Count('valor'))
         if qtd_sem_fundo['valor__count'] is not None:
             ctx['qtd_sem_fundo'] = qtd_sem_fundo
-        qtd_nao_descontado = Recebido.objects.filter(foi_compensado=False).aggregate(Count('valor'))
+        qtd_nao_descontado = Recebido.objects.filter(foi_compensado=False).filter(foi_repassado=False).aggregate(Count('valor'))
         if qtd_nao_descontado['valor__count'] is not None:
             ctx['qtd_nao_descontado'] = qtd_nao_descontado
+        qtd_repassado = Recebido.objects.filter(foi_repassado=True).aggregate(Count('valor'))
+        if qtd_repassado['valor__count'] is not None:
+            ctx['qtd_nao_descontado'] = qtd_repassado
         ctx['recebidos_desc_hoje'] = Recebido.objects.filter(data_desconto=timezone.now())
         ctx['emitidos_desc_hoje'] = Emitido.objects.filter(data_desconto=timezone.now())
         return ctx

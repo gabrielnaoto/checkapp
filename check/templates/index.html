@@ -125,21 +125,21 @@
 {% block js %}
 <script>
 
-    var info = [{{ qtd_com_fundo.valor__count}}, {{ qtd_sem_fundo.valor__count}}, {{ qtd_nao_descontado.valor__count}}]
+    var info = [{{ qtd_com_fundo.valor__count}}, {{ qtd_sem_fundo.valor__count}}, {{ qtd_nao_descontado.valor__count}}, {{ qtd_repassado.valor__count}}]
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             datasets: [{
                 data: info,
-                backgroundColor: ['#7bc043', '#ee4035', '#0392cf']
+                backgroundColor: ['#7bc043', '#ee4035', '#0392cf', '#ffce00']
             }],
 
-            // These labels appear in the legend and in the tooltips when hovering different arcs
             labels: [
                 'Com fundo',
                 'Sem fundo',
-                'Não descontado'
+                'Não descontado',
+                'Foi repassado'
             ]
         }
 
