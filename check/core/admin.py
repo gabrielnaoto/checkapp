@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from check.core.models import Cliente, User, Empresa, Fornecedor
+from check.core.models import *
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
@@ -26,3 +26,6 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Cliente)
 admin.site.register(Fornecedor)
 admin.site.register(Empresa)
+admin.site.register(Banco)
+admin.site.register(Emitido)
+admin.site.register(Recebido)
