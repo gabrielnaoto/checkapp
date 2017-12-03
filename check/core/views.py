@@ -24,7 +24,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
         total_repassado = Recebido.objects.filter(foi_repassado=True).aggregate(Sum('valor'))
         if total_repassado['valor__sum'] is not None:
             ctx['total_repassado'] = total_repassado
-        qtd_com_fundo = Recebido.objects.filter(tem_fundo=True).filter(foi_compensando=True).filter(foi_repassado=False).aggregate(Count('valor'))
+        qtd_com_fundo = Recebido.objects.filter(tem_fundo=True).filter(foi_compensado=True).filter(foi_repassado=False).aggregate(Count('valor'))
         if qtd_com_fundo['valor__count'] is not None:
             ctx['qtd_com_fundo'] = qtd_com_fundo
         qtd_sem_fundo = Recebido.objects.filter(tem_fundo=False).aggregate(Count('valor'))
