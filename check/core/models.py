@@ -84,6 +84,7 @@ class Cliente(TemContato, TemEndereco, models.Model):
 class Cheque(models.Model):
     TIPO_CHEQUE = (
         (1, "Cheque Pré"),
+        (2, "Cheque Pós"),
     )
     numero_cheque = models.IntegerField()
     banco = models.ForeignKey(Banco)

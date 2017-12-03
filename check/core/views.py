@@ -35,7 +35,7 @@ class IndexView(LoginRequiredMixin, TemplateView):
             ctx['qtd_nao_descontado'] = qtd_nao_descontado
         qtd_repassado = Recebido.objects.filter(foi_repassado=True).aggregate(Count('valor'))
         if qtd_repassado['valor__count'] is not None:
-            ctx['qtd_nao_descontado'] = qtd_repassado
+            ctx['qtd_repassado'] = qtd_repassado
         ctx['recebidos_desc_hoje'] = Recebido.objects.filter(data_desconto=timezone.now())
         ctx['emitidos_desc_hoje'] = Emitido.objects.filter(data_desconto=timezone.now())
         return ctx
